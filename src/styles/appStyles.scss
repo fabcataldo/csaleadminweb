@@ -13,3 +13,22 @@
 .headerStyle {
     background: #6200EE !important;
 }
+.button{
+    background: #6200EE !important;
+}
+.footer{
+    background: #1C2C15 !important;
+    color: white !important;
+}
+.labelStyle{
+    & .ant-col {
+    & .ant-form-item {
+    & .ant-form-item-label {
+    &.ant-form-item-required{
+        color: white !important;
+        //YOUR CUSTOM STYLE
+      }
+    }
+}
+}
+}
