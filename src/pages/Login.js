@@ -1,13 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Checkbox, Layout, Menu, Row } from 'antd';
 import 'antd/dist/antd.css';
 import '../styles/appStyles.scss';
 import background from '../assets/imgs/background.jpg'
+import Api from '../api/Api';
 const { Header, Footer, Content } = Layout;
 
+
 function Login() {
-  const onFinish = values => {
-    console.log('Success:', values);
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
+  let loginData=null;
+
+  useEffect(() => {
+    if(user){
+      console.log(user);
+    }
+  },[user]);
+
+  const onFinish = async values => {
+    const response = await Api.login(values)
+          //GUARDAR CON REDUX
+          setUser(response.user);
+          setToken(response.token);
   };
 
   const onFinishFailed = errorInfo => {
@@ -35,8 +50,8 @@ function Login() {
           >
             <Row   style={{justifyContent: "center"}}>
               <Form.Item
-                label="Usuario"
-                name="username"
+                label="Email"
+                name="email"
                 className="labelStyle"
                 rules={[
                   {
