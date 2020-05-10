@@ -18,9 +18,17 @@ export default class Api{
     }
 
     static getTicket = async (ticketId, conf)=>{
-        console.log(conf);
         let response;
         await axios.get(Global.URL_SRV+Global.URL_API+'/tickets/'+ticketId, conf)
+        .then(res=>{
+            response = res.data;
+        });
+        return response;
+    }
+
+    static getUserTicket = async (ticketId, conf)=>{
+        let response;
+        await axios.get(Global.URL_SRV+Global.URL_API+'/users/ticket/'+ticketId, conf)
         .then(res=>{
             response = res.data;
         });
