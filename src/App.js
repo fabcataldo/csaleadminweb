@@ -1,11 +1,14 @@
 import React from 'react';
 import Routing from './routing/Routing';
 
-function App() {
-  return (
-    <Routing>
-    </Routing>
 
+const App=()=> {
+
+  return (
+    <div>
+      <Routing>
+      </Routing>
+    </div>
   );
 }
 

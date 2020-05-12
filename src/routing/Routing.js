@@ -2,23 +2,28 @@ import React from 'react';
 import EmployeeHome from '../pages/EmployeeHome';
 import TicketDetail from '../pages/TicketDetail';
 import OwnerHome from '../pages/OwnerHome';
-import { BrowserRouter as Router,Switch, Route, withRouter } from 'react-router-dom';
-import UpdateEmployee from '../pages/UpdateEmployee';
+import { BrowserRouter as Router,Switch } from 'react-router-dom';
+import UpdateUser from '../pages/UpdateUser';
 import Login from '../pages/Login';
+import RouterWrapper from './RouterWrapper';
+import History from './History';
 
 const Routing = () => {
+    const token = JSON.parse(localStorage.getItem('token'));
+    const user = JSON.parse(localStorage.getItem('user'));
     return (
-        <Router>
+        <Router history={History}>
         <Switch>
-            <Route path="/ehome" exact component={withRouter(EmployeeHome)}></Route>
-            <Route path="/ohome" exact component={withRouter(OwnerHome)}></Route>
-            <Route path="/ehome/account" exact component={withRouter(UpdateEmployee)}></Route>
-            <Route path="/ehome/ticket" exact component={withRouter(TicketDetail)}></Route>
-            <Route path="" strict exact component={withRouter(Login)}></Route>      
-
+            <RouterWrapper path="/ehome" exact component={(EmployeeHome)} isPrivate></RouterWrapper>
+            <RouterWrapper path="/ohome" exact component={(OwnerHome)} ></RouterWrapper>
+            <RouterWrapper path="/ohome/account" exact component={(UpdateUser)} ></RouterWrapper>
+            <RouterWrapper path="/ehome/account" exact component={(UpdateUser)} ></RouterWrapper>
+            <RouterWrapper path="/ehome/ticket" exact component={(TicketDetail)} isPrivate></RouterWrapper>
+            <RouterWrapper path="" strict exact component={Login}></RouterWrapper> 
         </Switch>
-        </Router>
+        </Router>      
     )
+
 }
 
 export default Routing;
