@@ -8,6 +8,7 @@ import { DownOutlined } from "@ant-design/icons";
 import { Avatar } from 'antd';
 import { useDispatch } from 'react-redux'
 import background2 from '../assets/imgs/background2.png'
+import logo from '../assets/imgs/logo.png';
 import Api from '../api/Api';
 import { setTicket as storeTicket } from '../actions/ticket';
 const { Header, Footer, Content } = Layout;
@@ -20,6 +21,8 @@ const EmployeeHome = () => {
   const token = useSelector((token) => {return token.token.payload})
   const dispatch = useDispatch()
 
+  const userInfo = JSON.parse(localStorage.getItem('user'))
+  const tokenInfo = JSON.parse(localStorage.getItem('token'))
 
   console.log(token)
   const goToUpdateAccountPage = ()=>{
@@ -27,37 +30,40 @@ const EmployeeHome = () => {
   }
 
   const onFinish = async values => {
-    /*
-    const response = await Api.login(values)
-    //GUARDAR CON REDUX
-    setUser(response.user);
-    setToken(response.token);
-
-    dispatch(storeUser(response.user))
-    dispatch(storeToken(response.token))
-    history.push("/ehome");
-     */
     const configRequest = {
-      headers: { Authorization: `${token}` }
+      headers: { Authorization: `${tokenInfo}` }
     }
-    const response = await Api.getTicket(values.ticketId, configRequest);
-    dispatch(storeTicket(response.ticket))
-    history.push("/ehome/ticket", {ticket: response});
+    const userTicket = await Api.getUserTicket(values.ticketId, configRequest);
+    const ticket = await Api.getTicket(values.ticketId, configRequest);
+
+    dispatch(storeTicket(ticket))
+    localStorage.setItem('ticket', JSON.stringify(ticket.ticket))
+    localStorage.setItem('userTicket', JSON.stringify(userTicket))
+    
+    history.push("/ehome/ticket");
   };
 
   const onFinishFailed = errorInfo => {
     console.log('Failed:', errorInfo);
   };
 
+  const closeSession = ()=>{
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    localStorage.removeItem('ticket');
+    localStorage.removeItem('userTicket');
+    history.push("")
+  }
+
   const menu = (
     <div>
       
       <Menu style={{marginTop:8}}>
-      {user.name + ' '+user.surname}  
+      {userInfo.name + ' '+userInfo.surname}  
         <Menu.Item key="0" onClick={e=> goToUpdateAccountPage()}>
           Actualizar datos
         </Menu.Item>
-        <Menu.Item key="1">
+        <Menu.Item key="1" onClick={e=> closeSession()}>
           Cerrar sesión
         </Menu.Item>
       </Menu>
@@ -66,8 +72,10 @@ const EmployeeHome = () => {
 
   return (
     <Layout className="layout">
-    <Header style={{background:"#6200EE"}}>
-      <div className="logo" onClick={()=>{ history.push(""); }}></div>
+    <Header className="headerStyle">
+      <div className="logo" onClick={()=>{ history.push(""); }}>
+        <img src={logo} width="50" height="50" />
+      </div>
 
       <Menu mode="horizontal" defaultSelectedKeys={['2']} style={{float:"right", background:"#6200EE", color:"white"}}>
         <Menu.Item key="1">Ayuda</Menu.Item>
