@@ -4,11 +4,10 @@
     min-height: 1000px;
 }
 .logo {
-    width: 120px;
-    height: 31px;
-    background: rgba(255, 255, 255, 0.2);
-    margin: 16px 24px 16px 0;
+    width: 50px;
+    height: 50px;
     float: left;
+    margin: -0.5vh; /* If you want no margin */
 }
 .headerStyle {
     background: #6200EE !important;
@@ -20,25 +19,8 @@
     background: #1C2C15 !important;
     color: white !important;
 }
-.labelStyle{
-    & .ant-col {
-    & .ant-form-item {
-    & .ant-form-item-label {
-    &.ant-form-item-required{
-        color: white !important;
-        //YOUR CUSTOM STYLE
-      }
-    }
-}
-}
-}
-
-.ticketDetail{
-    background-color: white;
-    text-align: center;
-    width: 20rem;
-    height: 27rem;
-    margin-left: 18rem;
+.ant-form-item-label > label {
+    color: white !important;
 }
 
 .cell-class {
