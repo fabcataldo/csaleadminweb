@@ -12,36 +12,22 @@ const { Header, Footer, Content } = Layout;
 
 
 const Login = () => {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
-  let loginData = null;
   const history = useHistory();
-
   const dispatch = useDispatch()
 
-  useEffect(() => {
-    if (user) {
-      console.log(user);
-    }
-  }, [user]);
-  
   const onFinish = async values => {
     const response = await Api.login(values)
-    //GUARDAR CON REDUX
-    setUser(response.user);
-    setToken(response.token);
-
     dispatch(storeUser(response.user))
     dispatch(storeToken(response.token))
 
+    localStorage.setItem('user', JSON.stringify(response.user))
+    localStorage.setItem('token', JSON.stringify(response.token))
     if(response.user.role.name=="empleado"){
       history.push("/ehome");
     }
     if(response.user.role.name=="dueño" || response.user.role.name=="socio" ){
       history.push("/ohome");
     }
-
-    
   };
 
   const onFinishFailed = errorInfo => {
