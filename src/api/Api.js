@@ -34,4 +34,13 @@ export default class Api{
         });
         return response;
     }
+    
+    static updateUser = async(user, conf)=>{
+        let response;
+        await axios.put(Global.URL_SRV+Global.URL_API+'/users/'+user._id, user, conf)
+        .then(res=>{
+            response = res.data;
+        });
+        return response;
+    }
 }
