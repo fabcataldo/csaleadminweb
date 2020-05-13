@@ -20,7 +20,7 @@ const TicketDetail = () => {
     const tokenInfo = JSON.parse(localStorage.getItem('token'))
     const userTicket = JSON.parse(localStorage.getItem('userTicket'))
     const ticket = JSON.parse(localStorage.getItem('ticket'))
-    
+
     const purchasedProductsColumns = [
         {
             title: 'Descripcion',
@@ -85,16 +85,26 @@ const TicketDetail = () => {
         history.push("/ehome/account")
     }
 
+
+    const closeSession = () => {
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        localStorage.removeItem('ticket');
+        localStorage.removeItem('userTicket');
+        history.push("")
+    }
+
+
     const goToFirstPage = () => {
-        if(user && tokenInfo)
-            if(user.role.name == "empleado")
+        if (user && tokenInfo)
+            if (user.role.name == "empleado")
                 history.push("/ehome")
             else
                 history.push("/ohome")
-        else{
+        else {
             history.push("")
         }
-            
+
     }
 
     const menu = (
@@ -105,7 +115,7 @@ const TicketDetail = () => {
                 <Menu.Item key="0" onClick={e => goToUpdateAccountPage()}>
                     Actualizar datos
             </Menu.Item>
-                <Menu.Item key="1">
+                <Menu.Item key="1" onClick={e => closeSession()}>
                     Cerrar sesión
             </Menu.Item>
             </Menu>
@@ -113,10 +123,10 @@ const TicketDetail = () => {
     );
     return (
         <Layout className="layout">
-        <Header className="headerStyle">
-          <div className="logo" onClick={()=>{goToFirstPage()}}>
-            <img src={logo} width="50" height="50" />
-          </div>
+            <Header className="headerStyle">
+                <div className="logo" onClick={() => { goToFirstPage() }}>
+                    <img src={logo} width="50" height="50" />
+                </div>
 
                 <Menu mode="horizontal" defaultSelectedKeys={['2']} style={{ float: "right", background: "#6200EE", color: "white" }}>
                     <Menu.Item key="1">Ayuda</Menu.Item>
@@ -157,11 +167,11 @@ const TicketDetail = () => {
                                         columns={purchasedProductsColumns}></StaticTable>
                                     <br></br>
                                     Total: ${ticket.total}
-                                        <br></br>
+                                    <br></br>
                                     Pagos realizados:
                                     <StaticTable
-                                            data={mapPaymentMethodsData(ticket.payment_methods)}
-                                            columns={paymentMethodsColumns}></StaticTable>
+                                        data={mapPaymentMethodsData(ticket.payment_methods)}
+                                        columns={paymentMethodsColumns}></StaticTable>
                                     <br></br>
                                     Nota: cuando llegués a la entrada, mostrale al
                                     boletero/a o barman/barwoman este ticket, asi aprovechás tu compra!.

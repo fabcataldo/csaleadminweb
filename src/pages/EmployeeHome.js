@@ -77,7 +77,7 @@ const EmployeeHome = () => {
         <img src={logo} width="50" height="50" />
       </div>
 
-      <Menu mode="horizontal" defaultSelectedKeys={['2']} style={{float:"right", background:"#6200EE", color:"white"}}>
+      <Menu mode="horizontal"  style={{float:"right", background:"#6200EE", color:"white"}}>
         <Menu.Item key="1">Ayuda</Menu.Item>
         <Menu.Item key="2">
           <Dropdown overlay={menu} trigger={["click"]}>
@@ -126,7 +126,7 @@ const EmployeeHome = () => {
       </div>
       
     </Content>
-    <Footer style={{ textAlign: 'center' }}>CSaleAdminWeb (c) 2020</Footer>
+    <Footer className="footer">CSaleAdminWeb (c) 2020</Footer>
   </Layout>
   );
 }
