@@ -10,7 +10,6 @@ const RouteWrapper=({
 })=> {
   const token = JSON.parse(localStorage.getItem('token'));
   const user = JSON.parse(localStorage.getItem('user'));
-    console.log('ASDASDASD' +rest);
   /**
    * Redirect user to SignIn page if he tries to access a private route
    * without authentication.
