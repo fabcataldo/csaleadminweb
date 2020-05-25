@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Layout, Menu, Dropdown, Row } from 'antd';
+import { Layout, Menu, Dropdown} from 'antd';
 import 'antd/dist/antd.css';
 import { DownOutlined } from "@ant-design/icons";
 import account from '../assets/imgs/account.png'
@@ -15,42 +15,51 @@ const UsersAdministrator = () => {
     const history = useHistory();
     const actualToken = JSON.parse(localStorage.getItem('token'))
     const userSaved = JSON.parse(localStorage.getItem('user'))
+
     const [users, setUsers] = useState(null);
 
     const userInfo = JSON.parse(localStorage.getItem('user'))
     const tokenInfo = JSON.parse(localStorage.getItem('token'))
 
+    useEffect(()=>{
+        const fetchData = async()=>{
+            await getUsers();
+        }
+        fetchData();
+
+    },[])
+
+    const getUsers=async ()=>{
+        try{
+            let response = await Api.getUsers(configRequest)
+            response=mapUsersData(response.data.users)
+            setUsers(response);
+        }catch(err){
+            console.log(err);
+        }
+    }
+
     const usersColumns = [
         {
             title: 'Nombre',
             dataIndex: 'name',
-            key: 'name',
+            editable: true
         },
         {
             title: 'Apellido',
             dataIndex: 'surname',
-            key: 'surname',
+            editable: true
         },
         {
             title: 'Email',
             dataIndex: 'email',
-            key: 'email',
+            editable: true
         },
-        {
-            title: 'Rol',
-            dataIndex: 'role.name',
-            key: 'role.name',
-        },
-        {
-            title: 'Privileges',
-            dataIndex: 'role.name.privileges',
-            key: 'role.name.privileges',
-        }
     ];
+
 
     const mapUsersData = (dataSource) => {
         let a = [];
-        console.log('PISE MAPUSERSDATA')
         a = dataSource.map((item, index) => {
             return {
                 key: '' + index, name: item.name, surname: item.surname, email: item.email,
@@ -59,17 +68,7 @@ const UsersAdministrator = () => {
         })
         return a;
     }
-
-    useEffect(() => {
-        const getUsers = async () => {
-            return await Api.getUsers(configRequest);
-        }
-        
-        return()=>{
-            setUsers(mapUsersData(getUsers()))
-        }
-    })
-
+    }
     const configRequest = {
         headers: { Authorization: `${tokenInfo}` }
     }
@@ -112,7 +111,6 @@ const UsersAdministrator = () => {
             </Menu>
         </div>
     );
-
     return (
         <Layout className="layout">
             <Header className="headerStyle">
