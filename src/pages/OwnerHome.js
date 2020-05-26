@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, Button, Layout, Menu, Dropdown, Row } from 'antd';
+import { Layout, Menu, Dropdown} from 'antd';
 import 'antd/dist/antd.css';
 import { DownOutlined } from "@ant-design/icons";
 import account from '../assets/imgs/account.png'
@@ -7,6 +7,7 @@ import logo from '../assets/imgs/logo.png';
 import { Avatar } from 'antd';
 import background2 from '../assets/imgs/background2.png'
 import { useHistory } from "react-router-dom";
+import OwnerDashboard from './OwnerDashboard';
 const { Header, Footer, Content } = Layout;
 
 const OwnerHome = () =>{
@@ -72,6 +73,10 @@ const OwnerHome = () =>{
         <h3  style={{ textAlign: 'center', color: 'white' }}>
         ¡Acá vas a poder gestionar tu negocio de manera fácil, rápida y segura!
         </h3>
+
+          <OwnerDashboard>
+          </OwnerDashboard>
+
       </div>
     </Content>
     <Footer className="footer">CSaleAdminWeb (c) 2020</Footer>
