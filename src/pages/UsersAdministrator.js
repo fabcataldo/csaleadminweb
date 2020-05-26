@@ -68,7 +68,6 @@ const UsersAdministrator = () => {
         })
         return a;
     }
-    }
     const configRequest = {
         headers: { Authorization: `${tokenInfo}` }
     }
