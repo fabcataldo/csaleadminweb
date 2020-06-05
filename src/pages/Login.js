@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Form, Input, Button, Layout, Row } from 'antd';
 import { useHistory } from "react-router-dom";
 import 'antd/dist/antd.css';
 import '../styles/appStyles.scss';
 import background from '../assets/imgs/background.jpg'
 import Api from '../api/Api';
+import logo from '../assets/imgs/logo.png';
 import { useDispatch } from 'react-redux'
 import { setUser as storeUser } from '../actions/users';
 import { setToken as storeToken} from '../actions/token';
@@ -36,9 +37,10 @@ const Login = () => {
   return (
 
     <Layout className="layout">
-
       <Header className="headerStyle">
-        <div className="logo" />
+        <div className="logo" onClick={()=>{ history.push(""); }}>
+          <img src={logo} width="50" height="50" />
+        </div>
       </Header>
       <Content>
         <div className="site-layout-content" style={{ backgroundImage: `url(${background})`, textAlign: "center" }}>
