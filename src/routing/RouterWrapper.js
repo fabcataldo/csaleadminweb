@@ -2,6 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Route, Redirect, withRouter  } from "react-router-dom";
 import Login from '../pages/Login';
+import OwnerHome from '../pages/OwnerHome';
+import EmployeeHome from '../pages/EmployeeHome';
 
 const RouteWrapper=({
   component: Component,
@@ -14,11 +16,16 @@ const RouteWrapper=({
    * Redirect user to SignIn page if he tries to access a private route
    * without authentication.
    */
-  if (isPrivate && !user || !token) {
-    
+  if (isPrivate && !user && !token) {
     return <Route exact path=""> <Login></Login> <Redirect to=""></Redirect></Route>
   }
-
+  if (isPrivate && user && token) {
+    if(user.role.name.includes("empleado"))
+      return <Route exact path=""> <EmployeeHome></EmployeeHome> <Redirect to="/ehome"></Redirect></Route>
+    else
+      return <Route exact path=""> <OwnerHome></OwnerHome> <Redirect to="/ohome"></Redirect></Route>
+  
+  }
   /**
    * If not included on both previous cases, redirect user to the desired route.
    */
