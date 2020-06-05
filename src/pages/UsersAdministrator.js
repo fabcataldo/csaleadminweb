@@ -7,7 +7,7 @@ import logo from '../assets/imgs/logo.png';
 import { Avatar } from 'antd';
 import background2 from '../assets/imgs/background2.png'
 import { useHistory } from "react-router-dom";
-import DynamicTable from '../components/DynamicTable';
+import DynamicTableHook from '../components/DynamicTableHook';
 import Api from '../api/Api';
 const { Header, Footer, Content } = Layout;
 
@@ -20,25 +20,36 @@ const UsersAdministrator = () => {
 
     const userInfo = JSON.parse(localStorage.getItem('user'))
     const tokenInfo = JSON.parse(localStorage.getItem('token'))
-
-    useEffect(()=>{
-        const fetchData = async()=>{
-            await getUsers();
-        }
-        fetchData();
-
-    },[])
-
-    const getUsers=async ()=>{
-        try{
-            let response = await Api.getUsers(configRequest)
-            response=mapUsersData(response.data.users)
-            setUsers(response);
-        }catch(err){
-            console.log(err);
-        }
+    const configRequest = {
+        headers: { Authorization: `${tokenInfo}` }
     }
 
+  
+    const mapUsersData = (dataSource) => {
+        let a = [];
+        a = dataSource.map((item, index) => {
+            return {
+                key: '' + index, name: item.name, surname: item.surname, email: item.email,
+                role: item.role
+            }
+        })
+        return a;
+      }
+
+    useEffect(()=>{
+        const getUsers = async()=>{
+            try{
+                let response = await Api.getUsers(configRequest)
+                response=mapUsersData(response.users)
+                setUsers(response);
+            }catch(err){
+                console.log(err);
+            }
+        }
+        getUsers();
+      },[]);
+
+      
     const usersColumns = [
         {
             title: 'Nombre',
@@ -58,19 +69,7 @@ const UsersAdministrator = () => {
     ];
 
 
-    const mapUsersData = (dataSource) => {
-        let a = [];
-        a = dataSource.map((item, index) => {
-            return {
-                key: '' + index, name: item.name, surname: item.surname, email: item.email,
-                role: item.role
-            }
-        })
-        return a;
-    }
-    const configRequest = {
-        headers: { Authorization: `${tokenInfo}` }
-    }
+
 
     const closeSession = () => {
         localStorage.removeItem('user');
@@ -134,11 +133,11 @@ const UsersAdministrator = () => {
                     <h1 style={{ textAlign: 'center', color: 'white' }}>
                         Gestionar usuarios
         </h1>
-                    <DynamicTable
+                    <DynamicTableHook
                         columns={usersColumns}
                         data={users}
                     >
-                    </DynamicTable>
+                    </DynamicTableHook>
                 </div>
             </Content>
             <Footer className="footer">CSaleAdminWeb (c) 2020</Footer>
