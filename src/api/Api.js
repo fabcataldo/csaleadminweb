@@ -6,7 +6,7 @@ export default class Api{
         let response;
         await axios({
             method: 'post',
-            url: Global.URL_SRV+Global.URL_API+'/users',
+            url: Global.URL_SRV+Global.URL_API+'/login',
             data: {
                 email: user.email,
                 password: user.password
@@ -19,7 +19,7 @@ export default class Api{
 
     static getUsers = async(conf)=>{
         let response;
-        await axios.get(Global.URL_SRV+Global.URL_API+'/users/', conf)
+        await axios.get(Global.URL_SRV+Global.URL_API+'/users', conf)
         .then(res=>{
             response = res.data;
         });
@@ -29,6 +29,15 @@ export default class Api{
     static getTicket = async (ticketId, conf)=>{
         let response;
         await axios.get(Global.URL_SRV+Global.URL_API+'/tickets/'+ticketId, conf)
+        .then(res=>{
+            response = res.data;
+        });
+        return response;
+    }
+
+    static getTickets = async (conf)=>{
+        let response;
+        await axios.get(Global.URL_SRV+Global.URL_API+'/tickets', conf)
         .then(res=>{
             response = res.data;
         });
