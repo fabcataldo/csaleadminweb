@@ -44,6 +44,16 @@ export default class Api{
         return response;
     }
 
+    static getTicketsByDate = async (conf, date_from, date_to)=>{
+        let response;
+        await axios.get(Global.URL_SRV+Global.URL_API+'/tickets/?date_from='+date_from+'&date_to='+date_to, conf)
+        .then(res=>{
+            response = res.data;
+        });
+        return response;
+    }
+
+
     static getUserTicket = async (ticketId, conf)=>{
         let response;
         await axios.get(Global.URL_SRV+Global.URL_API+'/users/ticket/'+ticketId, conf)
