@@ -24,6 +24,13 @@
     color: white !important;
 }
 
+
+.actionsDynamicTableStyleForm{
+    .ant-form-item-label > label {
+        color: black !important;
+    }
+}
+
 .cell-class {
     border-color: black; 
     border-width: .05rem; 
