@@ -90,6 +90,15 @@ export default class Api{
         return response;
     }
 
+    static getRoles = async(conf)=>{
+        let response;
+        await axios.get(Global.URL_SRV+Global.URL_API+'/roles', conf)
+        .then(res=>{
+            response = res.data;
+        });
+        return response;
+    }
+
     static removeUser = async(userId, conf)=>{
         let response;
         await axios.delete(Global.URL_SRV+Global.URL_API+'/users/'+userId, conf)
