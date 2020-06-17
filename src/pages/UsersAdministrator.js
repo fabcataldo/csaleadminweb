@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Menu, Dropdown} from 'antd';
+import { Layout, Menu, Dropdown,  Input, Button, Space} from 'antd';
 import 'antd/dist/antd.css';
 import { DownOutlined } from "@ant-design/icons";
 import account from '../assets/imgs/account.png'
@@ -9,6 +9,7 @@ import background2 from '../assets/imgs/background2.png'
 import { useHistory } from "react-router-dom";
 import DynamicTableHook from '../components/DynamicTableHook';
 import Api from '../api/Api';
+import { SearchOutlined } from '@ant-design/icons';
 const { Header, Footer, Content } = Layout;
 
 const UsersAdministrator = () => {
@@ -17,6 +18,8 @@ const UsersAdministrator = () => {
     const userSaved = JSON.parse(localStorage.getItem('user'))
 
     const [users, setUsers] = useState(null);
+    const [searchText, setSearchText] = useState('');
+    const [searchedColumn, setSearchedColumn] = useState('');
 
     const userInfo = JSON.parse(localStorage.getItem('user'))
     const tokenInfo = JSON.parse(localStorage.getItem('token'))
@@ -28,11 +31,17 @@ const UsersAdministrator = () => {
     const mapUsersData = (dataSource) => {
         let a = [];
         a = dataSource.map((item, index) => {
+            let itemPrivileges= '';
+            item.role.privileges.forEach((privilege)=>{
+                itemPrivileges+= privilege.description+ '. '
+            })
             return {
                 key: '' + index, name: item.name, surname: item.surname, email: item.email,
-                role: item.role
+                role: item.role.name, _id: item._id, privileges: itemPrivileges, password: item.password,
+                tickets: item.tickets, comments: item.comments
             }
         })
+        console.log(a)
         return a;
       }
 
@@ -49,23 +58,96 @@ const UsersAdministrator = () => {
         getUsers();
       },[]);
 
-      
+    const getColumnSearchProps = (dataIndex, title) => ({
+        filterDropdown: ({
+          setSelectedKeys,
+          selectedKeys,
+          confirm,
+          clearFilters
+        }) => (
+          <div style={{ padding: 8 }}>
+            <Input
+              placeholder={`Buscar ${title}`}
+              value={selectedKeys[0]}
+              onChange={e =>
+                setSelectedKeys(e.target.value ? [e.target.value] : [])
+              }
+              onPressEnter={() =>
+                handleSearch(selectedKeys, confirm, dataIndex)
+              }
+              style={{ width: 188, marginBottom: 8, display: "block" }}
+            />
+            <Space>
+              <Button
+                type="primary"
+                onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                icon={<SearchOutlined />}
+                size="small"
+                style={{ width: 90 }}
+              >
+                Buscar
+              </Button>
+              <Button
+                onClick={() => handleReset(clearFilters)}
+                size="small"
+                style={{ width: 90 }}
+              >
+                Limpiar
+              </Button>
+            </Space>
+          </div>
+        ),
+        filterIcon: filtered => (
+          <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+        ),
+        onFilter: (value, record) =>
+          record[dataIndex]
+            .toString()
+            .toLowerCase()
+            .includes(value.toLowerCase()),
+
+      });
+
+      const handleSearch = (selectedKeys, confirm, dataIndex) => {
+        confirm();
+        setSearchedColumn(dataIndex)
+        setSearchText(selectedKeys[0])
+      };
+    
+      const handleReset = clearFilters => {
+        clearFilters()
+        setSearchText('')
+      };
+    
     const usersColumns = [
         {
             title: 'Nombre',
             dataIndex: 'name',
-            editable: true
+            sorter: (a, b) => {a.name.localeCompare(b.name)},
+            ...getColumnSearchProps('name', 'Nombre')
         },
         {
             title: 'Apellido',
             dataIndex: 'surname',
-            editable: true
+            sorter: (a, b) => {a.surname.localeCompare(b.surname)},
+            ...getColumnSearchProps('surname', 'Apellido')
         },
         {
             title: 'Email',
             dataIndex: 'email',
-            editable: true
+            sorter: (a, b) => a.email.localeCompare(b.email),
+            ...getColumnSearchProps('email', 'Email')
         },
+        {
+            title: 'Rol',
+            dataIndex: 'role',
+            sorter: (a, b) => a.role.localeCompare(b.role),
+            ...getColumnSearchProps('role', 'Rol')
+        },
+        {
+            title: 'Privilegios',
+            dataIndex: 'privileges'
+        }
     ];
 
 
