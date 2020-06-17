@@ -1,55 +1,15 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import 'antd/dist/antd.css';
-import { Table, Input, Button, InputNumber, Popconfirm, Form } from 'antd';
+import { Table, Input, Button, InputNumber, Popconfirm, Form, Modal, Row, Col } from 'antd';
+import Api from '../api/Api';
+import ActionsDynamicTableModal from './ActionsDynamicTableModal';
 
-const EditableContext = React.createContext();
 
-const EditableRow = ({ index, ...props }) => {
-    const [form] = Form.useForm();
-    return (
-        <Form form={form} component={false}>
-            <EditableContext.Provider value={form}>
-                <tr {...props} />
-            </EditableContext.Provider>
-        </Form>
-    );
-};
+const tokenInfo = JSON.parse(localStorage.getItem('token'))
+const configRequest = {
+    headers: { Authorization: `${tokenInfo}` }
+}
 
-const EditableCell = ({
-    title,
-    editable,
-    children,
-    dataIndex,
-    record,
-    handleSave,
-    inputType,
-    editing,
-    ...restProps
-}) => {
-    const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
-    return (
-        <td {...restProps}>
-            {editing ? (
-                <Form.Item
-                    name={dataIndex}
-                    style={{
-                        margin: 0,
-                    }}
-                    rules={[
-                        {
-                            required: true,
-                            message: `Please Input ${title}!`,
-                        },
-                    ]}
-                >
-                    {inputNode}
-                </Form.Item>
-            ) : (
-                    children
-                )}
-        </td>
-    );
-};
 
 const DynamicTableHook = ({
     data,
@@ -59,11 +19,11 @@ const DynamicTableHook = ({
     const [dataSource, setDataSource] = useState([]);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [tableColumns, setTableColumns] = useState([]);
-    const [components, setComponents] = useState(null);
-    const [editingKey, setEditingKey] = useState('');
-    const [form] = Form.useForm();
+    const [modalVisible, setModalVisible] = useState(false);
+    const [roles, setRoles] = useState([]);
+    const [recordToEdit, setRecordToEdit] = useState(null);
 
-    const isEditing = record => record.key === editingKey;
+    
     useEffect(() => {
         if (data) {
             setDataSource(data);
@@ -76,81 +36,87 @@ const DynamicTableHook = ({
             newColumns.push({
                 title: 'Acciones',
                 dataIndex: 'operations',
-                render: (text, record) => {
-                    const editable = isEditing(record);
-                    return editable ? (
+                render: (_, record) => {
+                    return (
                         <span>
-                            <a
-                                href="javascript:;"
-                                onClick={() => handleSave(record.key)}
-                                style={{
-                                    marginRight: 8,
-                                }}
-                            >
-                                Save
+                            <a onClick={() => edit(record)}>
+                                Editar
                             </a>
-                            <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-                                <a>Cancel</a>
-                            </Popconfirm>
                         </span>
-                    ) : (
-                            <a disabled={editingKey !== ''} onClick={() => edit(record)}>
-                                Edit
-                            </a>
-                        );
+                    )
                 },
+                fixed: 'right'
             })
-
             setTableColumns(newColumns);
         }
-        console.log(tableColumns)
-    }, [columns])
+    }, [])
 
-    const cancel = () => {
-        setEditingKey('');
+    useEffect(()=>{
+        const getRoles = async ()=>{
+            try{
+                let rolesFromAPI = await Api.getRoles(configRequest);
+                setRoles(rolesFromAPI)    
+            }catch(err){
+                console.log(err);
+            }
+        }
+            getRoles();
+    },[])
+
+
+    const edit = (record) => {
+        setRecordToEdit(record);
+        setModalVisible(true);
     }
 
-    const edit = record => {
-        form.setFieldsValue({
-            name: '',
-            age: '',
-            address: '',
-            ...record,
-        });
-        setEditingKey(record.key);
-    };
+    const handleCancel = ()=>{
+        setModalVisible(false);
+        setRecordToEdit(null);
+    }
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
         let newData = dataSource;
+        let itemToDelete = {};
+        console.log(newData)
         selectedRowKeys.forEach(item2 => {
             let keyToDelete = newData.findIndex(data => data.key == item2);
+            console.log(keyToDelete)
+
             if (keyToDelete !== -1) {
+                itemToDelete = newData.find(data => data.key == item2);
+                console.log(itemToDelete)
                 newData.splice(keyToDelete, 1)
+
             }
         })
         setDataSource([...newData])
+        await Api.removeUser(itemToDelete._id, configRequest)
         setSelectedRowKeys([])
     };
 
-    const handleAdd = () => {
-        const newData = {
-            key: parseInt(Math.floor(Math.random() * 10000)),
-            name: `Edward King`,
-            age: 32,
-            address: `London, Park Lane no.`,
-        };
+    const handleSave = async (record) => {
+        let requestBody = {_id: record._id ? record._id : '', name: record.name, surname: record.surname,
+        email: record.email, password: record.password ? record.password : '123456', role: roles.find(role=>role.name.includes(record.role)),
+        tickets: record.tickets ? record.tickets : [], comments: record.comments ? record.comments : []}
+        
+        let newRecord = {key: record.key, name: record.name, surname: record.surname, email: record.email,
+        role: record.role, privileges: record.itemPrivileges, _id: record._id, password: record.password,
+        tickets: record.tickets, comments: record.comments}
 
-        setDataSource([...dataSource, newData])
-    };
-
-    const handleSave = row => {
         const newData = dataSource;
-        const index = newData.findIndex(item => row.key === item.key);
-        const item = newData[index];
-        newData.splice(index, 1, { ...item, ...row });
-        this.setState({
-            dataSource: newData,
-        });
+        if(recordToEdit){
+            const index = newData.findIndex(item => newRecord.key === item.key);
+            const item = newData[index];
+            newData.splice(index, 1, { ...item, ...newRecord }); 
+            await Api.updateUser(requestBody, configRequest)   
+        }
+        else{
+            newData.push(newRecord)
+            await Api.addUser(requestBody, configRequest)
+        }
+        
+        setModalVisible(false);
+        setDataSource(newData);
     };
 
     const onRowSelectionChange = (selectedRowKeys) => {
@@ -171,53 +137,49 @@ const DynamicTableHook = ({
         ]
     };
 
-    const mergedColumns = tableColumns.map(col => {
-        if (!col.editable) {
-            return col;
-        }
-
-        return {
-            ...col,
-            onCell: record => ({
-                record,
-                inputType: col.dataIndex === 'age' ? 'number' : 'text',
-                dataIndex: col.dataIndex,
-                title: col.title,
-                editing: isEditing(record),
-            }),
-        };
-    });
 
     return (
         <div>
-            <Button
-                onClick={handleAdd}
-                type="primary"
-                style={{
-                    marginBottom: 16,
-                }}
-            >
-                Añadir
-        </Button>
-            <Form form={form} component={false}>
-                <Table
-                    rowSelection={rowSelection}
-                    components={{
-                        body: {
-                            cell: EditableCell,
-                        },
+            <Row>
+                <Col span={2}>
+                    <Button
+                        onClick={()=>{setModalVisible(true)}}
+                        type="primary"
+                        style={{
+                            marginBottom: 16,
+                        }}
+                    >
+                        Añadir
+                    </Button>                
+                </Col>
+            </Row>
 
-                    }}
-                    rowClassName={() => 'editable-row'}
-                    bordered
-                    loading={!dataSource}
-                    dataSource={dataSource}
-                    columns={mergedColumns}
-                    pagination={{
-                        onChange: cancel,
-                    }}
-                />
-            </Form>
+            <Table
+                rowSelection={rowSelection}
+                rowClassName={() => 'editable-row'}
+                bordered
+                loading={!dataSource}
+                dataSource={dataSource}
+                columns={tableColumns}
+
+            />
+ 
+            {modalVisible && 
+            <Modal
+            title={"Nuevo usuario"}
+            visible={modalVisible}
+            onOk={handleSave}
+            onCancel={handleCancel}
+            footer={null}
+            >
+                <ActionsDynamicTableModal
+                    data={recordToEdit}
+                    onChange={handleSave}
+                    onCancel={handleCancel}
+                >
+                </ActionsDynamicTableModal>
+            </Modal>
+            }
         </div>
     );
 }
