@@ -66,14 +66,19 @@ const OwnerHome = () =>{
       </Menu>
     </Header>
     <Content>
-      <div className="site-layout-content" style={{ backgroundImage: `url(${background2})`}}>
-        <h1 style={{ textAlign: 'center', color: 'white' }}>
+      <div className="site-layout-content" style={{ backgroundImage: `url(${background2})`, textAlign: "center"}}>
+        <h1 style={{ color: 'white',fontWeight: 'bold' }}>
           Bienvenido a CSaleAdminWeb! :)
         </h1>
-        <h3  style={{ textAlign: 'center', color: 'white' }}>
+        <h3  style={{color: 'white' }}>
         ¡Acá vas a poder gestionar tu negocio de manera fácil, rápida y segura!
         </h3>
-
+        
+        <br></br>
+        <br></br>
+        <h4  style={{color: 'white' }}>
+          Gráfico de ganancias
+        </h4>
           <OwnerDashboard>
           </OwnerDashboard>
 
