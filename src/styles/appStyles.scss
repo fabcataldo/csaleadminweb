@@ -1,7 +1,9 @@
 .site-layout-content {
-    background: #fff;
     padding: 24px;
-    min-height: 1000px;
+    min-height: 80vh !important;
+    text-align: center;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 .logo {
     width: 50px;
@@ -10,10 +12,15 @@
     margin: -0.5vh; /* If you want no margin */
 }
 .headerStyle {
-    background: #6200EE !important;
+    background: #382456 !important;
+}
+.menuHeader{
+            float: right !important;
+            background: #382456 !important; 
+            color: white !important;
 }
 .button{
-    background: #6200EE !important;
+    background: #382456 !important;
 }
 .footer{
     background: #1C2C15 !important;
