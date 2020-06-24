@@ -8,6 +8,7 @@ import { useHistory } from "react-router-dom";
 export const RightMenuHeader = () => {
     const history = useHistory();
     const user = JSON.parse(localStorage.getItem('user'));
+    let countKey = 0;
 
     const goToUpdateAccountPage = () => {
         history.push("/ehome/account")
@@ -44,8 +45,9 @@ export const RightMenuHeader = () => {
     return (
         <div>
             <Menu mode="horizontal" className="menuHeader">
-                <Menu.Item key="1">Ayuda</Menu.Item>
-                <Menu.Item key="2">
+                <Menu.Item key={1}  onClick={()=>{ history.push("/ohome/usersAdmin"); }}>Gestionar usuarios</Menu.Item>
+                <Menu.Item key={2}>Ayuda</Menu.Item>
+                <Menu.Item key={3}>
                     <Dropdown overlay={menu} trigger={["click"]}>
                         <a className="ant-dropdown-link" >
                             <Avatar src={{ account }} />
