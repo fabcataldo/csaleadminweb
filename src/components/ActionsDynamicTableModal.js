@@ -152,7 +152,7 @@ const ActionsDynamicTableModal = (
                         </Col>
                         <Col span={8} push={5}>
                         <Form.Item>
-                            <Button type="primary" htmlType="submit" >Aplicar</Button>
+                            <Button type="primary" htmlType="submit" >Guardar</Button>
                         </Form.Item>
                         </Col>
                         </Row>
