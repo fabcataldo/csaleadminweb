@@ -19,13 +19,7 @@ const RouteWrapper=({
   if (isPrivate && !user && !token) {
     return <Route exact path=""> <Login></Login> <Redirect to=""></Redirect></Route>
   }
-  if (isPrivate && user && token) {
-    if(user.role.name.includes("empleado"))
-      return <Route exact path=""> <EmployeeHome></EmployeeHome> <Redirect to="/ehome"></Redirect></Route>
-    else
-      return <Route exact path=""> <OwnerHome></OwnerHome> <Redirect to="/ohome"></Redirect></Route>
-  
-  }
+
   /**
    * If not included on both previous cases, redirect user to the desired route.
    */
