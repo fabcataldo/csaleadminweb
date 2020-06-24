@@ -1,16 +1,15 @@
 import React from 'react';
-import { Form, Input, Button, Layout, Row, Menu, Dropdown,Avatar } from 'antd';
+import { Form, Input, Button, Layout, Row } from 'antd';
 import { useHistory } from "react-router-dom";
 import 'antd/dist/antd.css';
 import '../styles/appStyles.scss';
-import background from '../assets/imgs/background.jpg'
+import background2 from '../assets/imgs/background2.png'
 import Api from '../api/Api';
 import { useDispatch } from 'react-redux'
 import { setUser as storeUser } from '../actions/users';
 import { setToken as storeToken } from '../actions/token';
-import account from '../assets/imgs/account.png'
-import { DownOutlined } from "@ant-design/icons";
-import logo from '../assets/imgs/logo.png';
+import { RightMenuHeader } from '../components/RightMenuHeader';
+import AppLogo from '../components/AppLogo';
 const { Header, Footer, Content } = Layout;
 
 
@@ -21,9 +20,8 @@ const UpdateUser = () => {
     const actualToken = JSON.parse(localStorage.getItem('token'))
     const userSaved = JSON.parse(localStorage.getItem('user'))
 
-    const mapDataToSend=(values)=>{
-        console.log(values);
-        return{
+    const mapDataToSend = (values) => {
+        return {
             name: values.name,
             surname: values.surname,
             email: values.email,
@@ -40,7 +38,7 @@ const UpdateUser = () => {
         const configRequest = {
             headers: { Authorization: `${actualToken}` }
         }
-        if(values.newPassword !== values.newPassword2){
+        if (values.newPassword !== values.newPassword2) {
             //generar notificacion
             return;
         }
@@ -66,59 +64,18 @@ const UpdateUser = () => {
         console.log('Failed:', errorInfo);
     };
 
-    const goToFirstPage = () => {
-        if(userSaved && actualToken)
-            if(userSaved.role.name == "empleado")
-                history.push("/ehome")
-            else
-                history.push("/ohome")
-        else{
-            history.push("")
-        }
-            
-    }
-
-    const menu = (
-        <div>
-
-            <Menu style={{ marginTop: 8 }}>
-                {userSaved.name + ' ' + userSaved.surname}
-                <Menu.Item key="0" onClick={e => goToUpdateAccountPage()}>
-                    Actualizar datos
-            </Menu.Item>
-                <Menu.Item key="1">
-                    Cerrar sesión
-            </Menu.Item>
-            </Menu>
-        </div>
-    );
-
-    const goToUpdateAccountPage = () => {
-        history.push("/ehome/account")
-    }
+ 
 
 
     return (
         <Layout className="layout">
-        <Header className="headerStyle">
-          <div className="logo" onClick={()=>{goToFirstPage()}}>
-            <img src={logo} width="50" height="50" />
-          </div>
-
-                <Menu mode="horizontal" defaultSelectedKeys={['2']} style={{ float: "right", background: "#6200EE", color: "white" }}>
-                    <Menu.Item key="1">Ayuda</Menu.Item>
-                    <Menu.Item key="2">
-                        <Dropdown overlay={menu} trigger={["click"]}>
-                            <a className="ant-dropdown-link" >
-                                <Avatar style={{ backgroundImage: `url(${account})` }} />
-                                <DownOutlined />
-                            </a>
-                        </Dropdown>
-                    </Menu.Item>
-                </Menu>
+            <Header className="headerStyle">
+                <AppLogo></AppLogo>
+                <RightMenuHeader>
+                </RightMenuHeader>
             </Header>
             <Content>
-                <div className="site-layout-content" style={{ backgroundColor: "#382456", textAlign: "center" }}>
+                <div className="site-layout-content" style={{ backgroundImage: `url(${background2})` }}>
                     <h1 style={{ color: "white" }}>
                         Actualizar cuenta
                     </h1>

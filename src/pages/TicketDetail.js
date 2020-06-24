@@ -1,24 +1,19 @@
 import React from 'react';
-import { Layout, Menu, Dropdown, Row, Col, Card, Avatar } from 'antd';
-import 'antd/dist/antd.css';
-import { useHistory } from "react-router-dom";
-import account from '../assets/imgs/account.png'
-import { useSelector } from 'react-redux'
-import Api from '../api/Api';
-import { DownOutlined } from "@ant-design/icons";
+import { Layout, Row, Col, Card } from 'antd';
+import background2 from '../assets/imgs/background2.png'
 import StaticTable from '../components/StaticTable';
-import logo from '../assets/imgs/logo.png';
+import AppLogo from '../components/AppLogo';
+import { RightMenuHeader } from '../components/RightMenuHeader';
 import '../styles/ticketDetail.scss'
 
 const { Header, Footer, Content } = Layout;
 
 
 const TicketDetail = () => {
-    const history = useHistory();
-
     const user = JSON.parse(localStorage.getItem('user'))
-    const tokenInfo = JSON.parse(localStorage.getItem('token'))
+    const token = JSON.parse(localStorage.getItem('token'))
     const userTicket = JSON.parse(localStorage.getItem('userTicket'))
+
     const ticket = JSON.parse(localStorage.getItem('ticket'))
 
     const purchasedProductsColumns = [
@@ -71,77 +66,15 @@ const TicketDetail = () => {
         return a;
     }
 
-    const mapPaymentMethodsData = (dataSource) => {
-        let result = [];
-        result = dataSource.map((item, index) => {
-            return {
-                key: '' + index, name: item.payment_method.name, amount: item.amount_paid
-            }
-        })
-        return result;
-    }
-
-    const goToUpdateAccountPage = () => {
-        history.push("/ehome/account")
-    }
-
-
-    const closeSession = () => {
-        localStorage.removeItem('user');
-        localStorage.removeItem('token');
-        localStorage.removeItem('ticket');
-        localStorage.removeItem('userTicket');
-        history.push("")
-    }
-
-
-    const goToFirstPage = () => {
-        if (user && tokenInfo)
-            if (user.role.name == "empleado")
-                history.push("/ehome")
-            else
-                history.push("/ohome")
-        else {
-            history.push("")
-        }
-
-    }
-
-    const menu = (
-        <div>
-
-            <Menu style={{ marginTop: 8 }}>
-                {user.name + ' ' + user.surname}
-                <Menu.Item key="0" onClick={e => goToUpdateAccountPage()}>
-                    Actualizar datos
-            </Menu.Item>
-                <Menu.Item key="1" onClick={e => closeSession()}>
-                    Cerrar sesión
-            </Menu.Item>
-            </Menu>
-        </div>
-    );
     return (
         <Layout className="layout">
             <Header className="headerStyle">
-                <div className="logo" onClick={() => { goToFirstPage() }}>
-                    <img src={logo} width="50" height="50" />
-                </div>
-
-                <Menu mode="horizontal" defaultSelectedKeys={['2']} style={{ float: "right", background: "#6200EE", color: "white" }}>
-                    <Menu.Item key="1">Ayuda</Menu.Item>
-                    <Menu.Item key="2">
-                        <Dropdown overlay={menu} trigger={["click"]}>
-                            <a className="ant-dropdown-link" >
-                                <Avatar style={{ backgroundImage: `url(${account})` }} />
-                                <DownOutlined />
-                            </a>
-                        </Dropdown>
-                    </Menu.Item>
-                </Menu>
+                <AppLogo></AppLogo>
+                <RightMenuHeader>
+                </RightMenuHeader>
             </Header>
             <Content>
-                <div className="site-layout-content" style={{ background: "#382456", color: "white" }}>
+                <div className="site-layout-content" style={{ backgroundImage: `url(${background2})` }}>
                     <h1 style={{ color: "white", textAlign: 'center' }}>
                         Validar ticket
                     </h1>
@@ -166,12 +99,7 @@ const TicketDetail = () => {
                                         data={mapPurchasedProductsData(ticket.purchased_products)}
                                         columns={purchasedProductsColumns}></StaticTable>
                                     <br></br>
-                                    Total: ${ticket.total}
-                                    <br></br>
-                                    Pagos realizados:
-                                    <StaticTable
-                                        data={mapPaymentMethodsData(ticket.payment_methods)}
-                                        columns={paymentMethodsColumns}></StaticTable>
+                                    Total: ${ticket.total} en {ticket.payment_methods.payment_method.name}
                                     <br></br>
                                     Nota: cuando llegués a la entrada, mostrale al
                                     boletero/a o barman/barwoman este ticket, asi aprovechás tu compra!.
