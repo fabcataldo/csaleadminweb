@@ -1,11 +1,10 @@
 import React from 'react';
 import { Form, Input, Button, Layout, Row } from 'antd';
 import { useHistory } from "react-router-dom";
-import 'antd/dist/antd.css';
 import '../styles/appStyles.scss';
-import background from '../assets/imgs/background.jpg'
+import background from '../assets/imgs/background2.png'
 import Api from '../api/Api';
-import logo from '../assets/imgs/logo.png';
+import AppLogo from '../components/AppLogo';
 import { useDispatch } from 'react-redux'
 import { setUser as storeUser } from '../actions/users';
 import { setToken as storeToken} from '../actions/token';
@@ -35,15 +34,12 @@ const Login = () => {
     console.log('Failed:', errorInfo);
   };
   return (
-
     <Layout className="layout">
       <Header className="headerStyle">
-        <div className="logo" onClick={()=>{ history.push(""); }}>
-          <img src={logo} width="50" height="50" />
-        </div>
+        <AppLogo></AppLogo>
       </Header>
       <Content>
-        <div className="site-layout-content" style={{ backgroundImage: `url(${background})`, textAlign: "center" }}>
+        <div className="site-layout-content" style={{ backgroundImage: `url(${background})`}}>
           <h1 style={{ color: "white" }}>
             Bienvenido a CSaleAdminWeb! :)
           </h1>
