@@ -26,11 +26,11 @@ export default class Api{
         return response;
     }
 
-    static getTicket = async (ticketId, conf)=>{
+    static getTicket = async (uniqueCode, conf)=>{
         let response;
-        await axios.get(Global.URL_SRV+Global.URL_API+'/tickets/'+ticketId, conf)
+        await axios.get(Global.URL_SRV+Global.URL_API+'/tickets/?unique_code='+uniqueCode, conf)
         .then(res=>{
-            response = res.data;
+            response = res.data[0];
         });
         return response;
     }
