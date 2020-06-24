@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import Api from '../api/Api';
 import { Modal, Button, Row, Col, Grid } from'antd';
-import { FilterOutlined } from '@ant-design/icons';
+import { FilterOutlined, ReloadOutlined } from '@ant-design/icons';
 import ConfigChart from '../components/ConfigChart';
 
 
 const OwnerDashboard = ()=>{
   const tokenInfo = JSON.parse(localStorage.getItem('token'));
   const [tickets, setTickets] = useState([]);
+  const [defaultTickets, setDefaultTickets] = useState([]);
   const [showModalConfig, setShowModalConfig] = useState(false);
   let dateParameter=null;
 
@@ -25,7 +26,16 @@ const OwnerDashboard = ()=>{
   
   const getTickets=async()=>{
     let tickets = await Api.getTickets(configRequest);
-    setTickets(tickets);
+    let newTickets = tickets.map((ticket)=>{let newDateOfPurchase = new Date(ticket.date_of_purchase); 
+      return {
+        ...ticket, date_of_purchase: newDateOfPurchase.getDate()+'/'+newDateOfPurchase.getMonth()+
+        '/'+newDateOfPurchase.getFullYear()+' '+newDateOfPurchase.getHours()+':'+
+        newDateOfPurchase.getMinutes()
+      }
+    })
+    setTickets(newTickets);
+
+    setDefaultTickets(newTickets)
   }
 
   const openModalCfg=()=>{
@@ -57,16 +67,22 @@ const OwnerDashboard = ()=>{
     else{
       tickets = await getTicketsByDate(dateParameter, null)
     }
-    setTickets(tickets);
+    let newTickets = tickets.map((ticket)=>{let newDateOfPurchase = new Date(ticket.date_of_purchase); 
+      return {
+        ...ticket, date_of_purchase: newDateOfPurchase.getDate()+'/'+newDateOfPurchase.getMonth()+
+        '/'+newDateOfPurchase.getFullYear()+' '+newDateOfPurchase.getHours()+':'+
+        newDateOfPurchase.getMinutes()
+      }
+    })
+    setTickets(newTickets);
 
-    console.log(tickets)
   };
 
   return(
     <div>
       {tickets.length!==0 ? <div>
       <Row>
-        <Col span={18} push={7}>
+        <Col span={15} push={7}>
           <LineChart
             width={550}
             height={300}
@@ -85,7 +101,18 @@ const OwnerDashboard = ()=>{
             <Line type="monotone" dataKey="total" stroke="#8884d8" />
           </LineChart>
         </Col>
-        <Col span={5} pull={13}>  
+        <Col span={4} pull={11}>
+        <Button
+            onClick={e=>{setTickets(defaultTickets)}}
+            style={{
+              marginBottom: 16,
+              background: "white"
+            }}
+            style={{ marginLeft:"95vh", marginTop: "4vh"}}>
+            <ReloadOutlined />
+          </Button>
+        </Col>
+        <Col span={5} pull={14}>  
           <Button
             onClick={openModalCfg}
             style={{
@@ -96,6 +123,7 @@ const OwnerDashboard = ()=>{
               <FilterOutlined />
             </Button>
         </Col>
+
       </Row>
           {
             showModalConfig &&
