@@ -1,15 +1,13 @@
-import React, { useContext, useState, useEffect, useRef } from 'react';
-import 'antd/dist/antd.css';
-import { Table, Input, Button, InputNumber, Popconfirm, Form, Modal, Row, Col } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Table, Button,  Modal, Row, Col } from 'antd';
 import Api from '../api/Api';
 import ActionsDynamicTableModal from './ActionsDynamicTableModal';
-
+import { EditOutlined } from "@ant-design/icons";
 
 const tokenInfo = JSON.parse(localStorage.getItem('token'))
 const configRequest = {
     headers: { Authorization: `${tokenInfo}` }
 }
-
 
 const DynamicTableHook = ({
     data,
@@ -38,11 +36,11 @@ const DynamicTableHook = ({
                 dataIndex: 'operations',
                 render: (_, record) => {
                     return (
-                        <span>
+                        <div style={{textAlign:'center'}}>
                             <a onClick={() => edit(record)}>
-                                Editar
+                                <EditOutlined />
                             </a>
-                        </span>
+                        </div>
                     )
                 },
                 fixed: 'right'
