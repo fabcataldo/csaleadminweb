@@ -5,9 +5,6 @@ import 'antd/dist/antd.css';
 import '../styles/appStyles.scss';
 import background2 from '../assets/imgs/background2.png'
 import Api from '../api/Api';
-import { useDispatch } from 'react-redux'
-import { setUser as storeUser } from '../actions/users';
-import { setToken as storeToken } from '../actions/token';
 import { RightMenuHeader } from '../components/RightMenuHeader';
 import AppLogo from '../components/AppLogo';
 const { Header, Footer, Content } = Layout;
@@ -15,7 +12,6 @@ const { Header, Footer, Content } = Layout;
 
 const UpdateUser = () => {
     const history = useHistory();
-    const dispatch = useDispatch()
 
     const actualToken = JSON.parse(localStorage.getItem('token'))
     const userSaved = JSON.parse(localStorage.getItem('user'))
@@ -43,13 +39,9 @@ const UpdateUser = () => {
             return;
         }
         const response = await Api.updateUser(mapDataToSend(values), configRequest)
-        dispatch(storeUser(response.user))
-
-
         localStorage.setItem('user', JSON.stringify(response.user))
 
         if (response.token) {
-            dispatch(storeToken(response.token))
             localStorage.setItem('token', JSON.stringify(response.token))
         }
         if (response.user.role.name == "empleado") {
@@ -79,6 +71,7 @@ const UpdateUser = () => {
                     <h1 style={{ color: "white" }}>
                         Actualizar cuenta
                     </h1>
+                    <br></br>
                     <Form
                         layout="vertical"
                         name="basic"
