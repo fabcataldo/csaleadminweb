@@ -11,7 +11,10 @@ export const RightMenuHeader = () => {
     let countKey = 0;
 
     const goToUpdateAccountPage = () => {
-        history.push("/ehome/account")
+        if(user.role.name.includes('empleado'))
+            history.push("/ehome/account")
+        else
+            history.push("/ohome/account")
     }
 
     const closeSession = () => {
@@ -23,8 +26,8 @@ export const RightMenuHeader = () => {
     }
 
     const menu = (
-        <div>
-            <Menu style={{ marginTop: 8, textAlign: 'left' }}>
+        <div style={{marginLeft: -46}}>
+            <Menu style={{ marginTop: 4, textAlign: 'left' }}>
                 <div style={{ textAlign: 'center' }}>
                     <Avatar src={`url(${account})`} />
                     <p style={{ marginTop: 10 }}>
@@ -34,7 +37,7 @@ export const RightMenuHeader = () => {
 
                 <Menu.Item key="0" onClick={e => goToUpdateAccountPage()}>
                     Actualizar datos
-            </Menu.Item>
+                </Menu.Item>
                 <Menu.Item key="1" onClick={e => closeSession()}>
                     Cerrar sesión
             </Menu.Item>
@@ -45,9 +48,13 @@ export const RightMenuHeader = () => {
     return (
         <div>
             <Menu mode="horizontal" className="menuHeader">
-                <Menu.Item key={1}  onClick={()=>{ history.push("/ohome/usersAdmin"); }}>Gestionar usuarios</Menu.Item>
-                <Menu.Item key={2}>Ayuda</Menu.Item>
-                <Menu.Item key={3}>
+                <Menu.Item key={1} onClick={()=>{ 
+                    if(!(user.role.name == 'empleado'))
+                        history.push("/ohome/usersAdmin")
+                    else
+                        return 
+                    }}>{!(user.role.name == 'empleado') ? 'Gestionar Usuarios' :  'Ayuda'}</Menu.Item>
+                <Menu.Item key={2}>
                     <Dropdown overlay={menu} trigger={["click"]}>
                         <a className="ant-dropdown-link" >
                             <Avatar src={{ account }} />
