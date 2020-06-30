@@ -91,7 +91,7 @@ const TicketDetail = () => {
                         <Col md={{span: 12, push: 2}} lg={{ span: 12, push: 3 }} xl={{ span: 12, push: 3 }}>
                             <Card className="userCard" bordered={false}>
                                 <h2>
-                                    Detalle del cliente
+                                    Cliente
                                 </h2>
                                 <p>
                                     Cliente: {userTicket.name + ' ' + userTicket.surname}
