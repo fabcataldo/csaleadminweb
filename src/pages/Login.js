@@ -5,23 +5,18 @@ import '../styles/appStyles.scss';
 import background from '../assets/imgs/background2.png'
 import Api from '../api/Api';
 import AppLogo from '../components/AppLogo';
-import { useDispatch } from 'react-redux'
-import { setUser as storeUser } from '../actions/users';
-import { setToken as storeToken} from '../actions/token';
 const { Header, Footer, Content } = Layout;
 
 
 const Login = () => {
   const history = useHistory();
-  const dispatch = useDispatch()
 
   const onFinish = async values => {
     const response = await Api.login(values)
-    dispatch(storeUser(response.user))
-    dispatch(storeToken(response.token))
 
     localStorage.setItem('user', JSON.stringify(response.user))
     localStorage.setItem('token', JSON.stringify(response.token))
+
     if(response.user.role.name=="empleado"){
       history.push("/ehome");
     }
@@ -40,9 +35,11 @@ const Login = () => {
       </Header>
       <Content>
         <div className="site-layout-content" style={{ backgroundImage: `url(${background})`}}>
-          <h1 style={{ color: "white" }}>
+          <h1 style={{ color: "white", fontWeight: 'bold'  }}>
             Bienvenido a CSaleAdminWeb! :)
           </h1>
+          <br></br>
+          <br></br>
           <Form
             layout="vertical"
             name="basic"
@@ -86,7 +83,6 @@ const Login = () => {
               </Form.Item>
             </Row>
             <Form.Item>
-
               <Button className="button" type="primary" htmlType="submit">
                 Iniciar sesión
               </Button>
@@ -94,6 +90,7 @@ const Login = () => {
           </Form>
         </div>
       </Content>
+      
       <Footer style={{ textAlign: 'center' }} className="footer">CSaleAdminWeb (c) 2020</Footer>
     </Layout>
   );
