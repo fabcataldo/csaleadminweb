@@ -158,10 +158,12 @@ const UsersAdministrator = () => {
                 <div className="site-layout-content" style={{ backgroundImage: `url(${background2})` }}>
                     <h1 style={{ textAlign: 'center', color: 'white' }}>
                         Gestionar usuarios
-        </h1>
+                    </h1>
+                    <br></br>
                     <DynamicTableHook
                         columns={usersColumns}
                         data={users}
+                        customStyle={"dynamicTable"}
                     >
                     </DynamicTableHook>
                 </div>
