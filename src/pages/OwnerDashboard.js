@@ -1,36 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import Api from '../api/Api';
-import { Modal, Button, Row, Col, Grid } from'antd';
+import { Modal, Button, Row, Col } from 'antd';
 import { FilterOutlined, ReloadOutlined } from '@ant-design/icons';
 import ConfigChart from '../components/ConfigChart';
 
 
-const OwnerDashboard = ()=>{
+const OwnerDashboard = () => {
   const tokenInfo = JSON.parse(localStorage.getItem('token'));
   const [tickets, setTickets] = useState([]);
   const [defaultTickets, setDefaultTickets] = useState([]);
   const [showModalConfig, setShowModalConfig] = useState(false);
-  let dateParameter=null;
+  let dateParameter = null;
 
   const configRequest = {
     headers: { Authorization: `${tokenInfo}` }
   };
 
-  useEffect(()=>{
-    const fetchData = async()=>{
-        await getTickets();
+  useEffect(() => {
+    const fetchData = async () => {
+      await getTickets();
     }
     fetchData();
-  },[]);
-  
-  const getTickets=async()=>{
+  }, []);
+
+  const getTickets = async () => {
     let tickets = await Api.getTickets(configRequest);
-    let newTickets = tickets.map((ticket)=>{let newDateOfPurchase = new Date(ticket.date_of_purchase); 
+    let newTickets = tickets.map((ticket) => {
+      let newDateOfPurchase = new Date(ticket.date_of_purchase);
       return {
-        ...ticket, date_of_purchase: newDateOfPurchase.getDate()+'/'+newDateOfPurchase.getMonth()+
-        '/'+newDateOfPurchase.getFullYear()+' '+newDateOfPurchase.getHours()+':'+
-        newDateOfPurchase.getMinutes()
+        ...ticket, date_of_purchase: newDateOfPurchase.getDate() + '/' + newDateOfPurchase.getMonth() +
+          '/' + newDateOfPurchase.getFullYear() + ' ' + newDateOfPurchase.getHours() + ':' +
+          newDateOfPurchase.getMinutes()
       }
     })
     setTickets(newTickets);
@@ -38,7 +39,7 @@ const OwnerDashboard = ()=>{
     setDefaultTickets(newTickets)
   }
 
-  const openModalCfg=()=>{
+  const openModalCfg = () => {
     setShowModalConfig(true);
   }
 
@@ -46,85 +47,88 @@ const OwnerDashboard = ()=>{
     setShowModalConfig(false)
   };
 
-  const onChangeModalCfg=(data)=>{
-    dateParameter=data;
+  const onChangeModalCfg = (data) => {
+    dateParameter = data;
     handleOk()
   }
 
-  const getTicketsByDate = async(dateFrom, dateTo) => {
+  const getTicketsByDate = async (dateFrom, dateTo) => {
     let response = await Api.getTicketsByDate(configRequest, dateFrom, dateTo)
     return response;
   }
 
-  const handleOk = async() => {
+  const handleOk = async () => {
     setShowModalConfig(false);
 
     let tickets;
 
-    if(Array.isArray(dateParameter)){
+    if (Array.isArray(dateParameter)) {
       tickets = await getTicketsByDate(dateParameter[0], dateParameter[1])
     }
-    else{
+    else {
       tickets = await getTicketsByDate(dateParameter, null)
     }
-    let newTickets = tickets.map((ticket)=>{let newDateOfPurchase = new Date(ticket.date_of_purchase); 
+    let newTickets = tickets.map((ticket) => {
+      let newDateOfPurchase = new Date(ticket.date_of_purchase);
       return {
-        ...ticket, date_of_purchase: newDateOfPurchase.getDate()+'/'+newDateOfPurchase.getMonth()+
-        '/'+newDateOfPurchase.getFullYear()+' '+newDateOfPurchase.getHours()+':'+
-        newDateOfPurchase.getMinutes()
+        ...ticket, date_of_purchase: newDateOfPurchase.getDate() + '/' + newDateOfPurchase.getMonth() +
+          '/' + newDateOfPurchase.getFullYear() + ' ' + newDateOfPurchase.getHours() + ':' +
+          newDateOfPurchase.getMinutes()
       }
     })
     setTickets(newTickets);
 
   };
 
-  return(
+  return (
     <div>
-      {tickets.length!==0 ? <div>
-      <Row>
-        <Col span={15} push={7}>
-          <LineChart
-            width={550}
-            height={300}
-            align='center'
-            data={tickets}
-            margin={{
-              top: 10, right: 120, left: 10, bottom: 10,
-            }}
-            style={{background: "white", marginTop: "10vh"}}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date_of_purchase" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Line type="monotone" dataKey="total" stroke="#8884d8" />
-          </LineChart>
-        </Col>
-        <Col span={4} pull={11}>
-        <Button
-            onClick={e=>{setTickets(defaultTickets)}}
-            style={{
-              marginBottom: 16,
-              background: "white"
-            }}
-            style={{ marginLeft:"95vh", marginTop: "4vh"}}>
-            <ReloadOutlined />
-          </Button>
-        </Col>
-        <Col span={5} pull={14}>  
-          <Button
-            onClick={openModalCfg}
-            style={{
-              marginBottom: 16,
-              background: "white"
-            }}
-            style={{ marginLeft:"95vh", marginTop: "4vh"}}>
+        <Row>
+          <Col md={{ span: 24 }} lg={{ span: 24 }} xl={{ span: 24 }}>
+            <Button
+              onClick={e => { setTickets(defaultTickets) }}
+              style={{
+                marginBottom: 5,
+                background: "white"
+              }}
+              style={{ marginTop: "4vh" }}>
+              <ReloadOutlined />
+            </Button>
+            <Button
+              onClick={openModalCfg}
+              style={{
+                marginBottom: 5,
+                background: "white"
+              }}
+              style={{ marginLeft: "5vh", marginTop: "4vh" }}>
               <FilterOutlined />
             </Button>
-        </Col>
+          </Col>
+        </Row>
+      <div>
+        {tickets.length !== 0 ? 
+        <div >
+          <Row className="chartStyle">
+            <Col md={{ span: 24}} lg={{ span: 24}, {push: 6}} xl={{ span: 24 }, { push: 7 }} >
+              <LineChart
+                width={550}
+                height={300}
+                align='center'
+                data={tickets}
+                margin={{
+                  top: 20, right: 50, left: 10, bottom: 10,
+                }}
+                style={{ background: "white", marginTop: "10vh" }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date_of_purchase" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="total" stroke="#8884d8" />
+              </LineChart>
+            </Col>
+          </Row>
 
-      </Row>
           {
             showModalConfig &&
             <Modal
@@ -133,13 +137,13 @@ const OwnerDashboard = ()=>{
               footer={null}
               onCancel={closeModalCfg}
             >
-            <ConfigChart onChange={onChangeModalCfg}></ConfigChart>
+              <ConfigChart onChange={onChangeModalCfg}></ConfigChart>
             </Modal>
           }
-      </div> 
-       : <div><br></br><h4 style={{color:'white'}}>No hay datos</h4></div>}
+        </div>
+          : <div><br></br><h4 style={{ color: 'white' }}>No hay datos</h4></div>}
+      </div>
     </div>
-
   );
 }
 
