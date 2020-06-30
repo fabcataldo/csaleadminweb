@@ -12,6 +12,7 @@ const configRequest = {
 const DynamicTableHook = ({
     data,
     columns,
+    customStyle,
     ...restProps
 }) => {
     const [dataSource, setDataSource] = useState([]);
@@ -159,7 +160,7 @@ const DynamicTableHook = ({
                 loading={!dataSource}
                 dataSource={dataSource}
                 columns={tableColumns}
-
+                className={customStyle ? customStyle : ''}
             />
  
             {modalVisible && 
