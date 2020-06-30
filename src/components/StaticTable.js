@@ -4,10 +4,11 @@ import { Table } from 'antd';
 
 
 const StaticTable=(props)=>{
-    const {data, columns} = props;
+    const {data, columns, tableStyle} = props;
     
     return(
         <Table 
+            className={tableStyle ? tableStyle : ''}
             columns={columns} 
             dataSource={data} 
             size="small"
