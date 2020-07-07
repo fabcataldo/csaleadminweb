@@ -96,11 +96,11 @@ const DynamicTableHook = ({
     const handleSave = async (record) => {
         let requestBody = {_id: record._id ? record._id : '', name: record.name, surname: record.surname,
         email: record.email, password: record.password ? record.password : '123456', role: roles.find(role=>role.name.includes(record.role)),
-        tickets: record.tickets ? record.tickets : [], comments: record.comments ? record.comments : []}
+        tickets: record.tickets ? record.tickets : [], comments: record.comments ? record.comments : [], loggedWithOAuth2: record.loggedWithOAuth2 ? record.loggedWithOAuth2 : false}
         
-        let newRecord = {key: record.key, name: record.name, surname: record.surname, email: record.email,
-        role: record.role, privileges: record.itemPrivileges, _id: record._id, password: record.password,
-        tickets: record.tickets, comments: record.comments}
+        let newRecord = {key: record.key ? record.key : (parseInt(dataSource[dataSource.length-1].key)+1).toString(), name: record.name, surname: record.surname, email: record.email,
+        role: record.role, privileges: record.privileges, _id: record._id, password: record.password ? record.password : '123456',
+        tickets: record.tickets ? record.tickets : [], comments: record.comments ? record.comments : [], loggedWithOAuth2: record.loggedWithOAuth2 ? record.loggedWithOAuth2 : false}
 
         const newData = dataSource;
         if(recordToEdit){
@@ -108,14 +108,18 @@ const DynamicTableHook = ({
             const item = newData[index];
             newData.splice(index, 1, { ...item, ...newRecord }); 
             await Api.updateUser(requestBody, configRequest)   
+            setRecordToEdit(null)
+            setDataSource(newData);
         }
         else{
+            const response = await Api.addUser(requestBody, configRequest)
+            newRecord._id = response.user._id;
+            newRecord.password = response.user.password;
             newData.push(newRecord)
-            await Api.addUser(requestBody, configRequest)
+            setDataSource([...newData]);
         }
-        
+
         setModalVisible(false);
-        setDataSource(newData);
     };
 
     const onRowSelectionChange = (selectedRowKeys) => {
@@ -138,6 +142,7 @@ const DynamicTableHook = ({
 
 
     return (
+        
         <div>
             <Row>
                 <Col span={2}>
@@ -161,6 +166,9 @@ const DynamicTableHook = ({
                 dataSource={dataSource}
                 columns={tableColumns}
                 className={customStyle ? customStyle : ''}
+                pagination = {{
+                    pageSize: 6
+                }}
             />
  
             {modalVisible && 
