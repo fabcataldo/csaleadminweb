@@ -5,25 +5,37 @@ import '../styles/appStyles.scss';
 import background from '../assets/imgs/background2.png'
 import Api from '../api/Api';
 import AppLogo from '../components/AppLogo';
+import Notification from '../components/Notification';
 const { Header, Footer, Content } = Layout;
 
 
 const Login = () => {
   const history = useHistory();
 
+  const saveSession=(session)=>{
+    localStorage.setItem('user', JSON.stringify(session.user))
+    localStorage.setItem('token', JSON.stringify(session.token))
+  }
+
   const onFinish = async values => {
     const response = await Api.login(values)
-
-    localStorage.setItem('user', JSON.stringify(response.user))
-    localStorage.setItem('token', JSON.stringify(response.token))
-
-    if(response.user.role.name=="empleado"){
-      history.push("/ehome");
-    }
-    if(response.user.role.name=="dueño" || response.user.role.name=="socio" ){
-      history.push("/ohome");
+    
+    if(response){
+      if(response.user.role.name=="empleado"){
+        saveSession(response);
+        history.push("/ehome");
+      }
+      if(response.user.role.name=="dueño" || response.user.role.name=="socio" ){
+        saveSession(response);
+        history.push("/ohome");
+      }
+      if(response.user.role.name=="cliente"){
+        Notification('info', 'Inicio de sesión fallido', 'Debe iniciar sesión con un usuario que sea dueño o socio.');
+        return;
+      }
     }
   };
+
 
   const onFinishFailed = errorInfo => {
     console.log('Failed:', errorInfo);
