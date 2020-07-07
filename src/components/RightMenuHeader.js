@@ -8,7 +8,6 @@ import { useHistory } from "react-router-dom";
 export const RightMenuHeader = () => {
     const history = useHistory();
     const user = JSON.parse(localStorage.getItem('user'));
-    let countKey = 0;
 
     const goToUpdateAccountPage = () => {
         if(user.role.name.includes('empleado'))
@@ -29,7 +28,7 @@ export const RightMenuHeader = () => {
         <div style={{marginLeft: -46}}>
             <Menu style={{ marginTop: 4, textAlign: 'left' }}>
                 <div style={{ textAlign: 'center' }}>
-                    <Avatar src={`url(${account})`} />
+                    <Avatar src={account} />
                     <p style={{ marginTop: 10 }}>
                         {user.name + ' ' + user.surname}
                     </p>
@@ -57,7 +56,7 @@ export const RightMenuHeader = () => {
                 <Menu.Item key={2}>
                     <Dropdown overlay={menu} trigger={["click"]}>
                         <a className="ant-dropdown-link" >
-                            <Avatar src={{ account }} />
+                            <Avatar src={ account } />
                             <DownOutlined />
                         </a>
                     </Dropdown>
