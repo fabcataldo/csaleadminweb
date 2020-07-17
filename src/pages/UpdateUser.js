@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Form, Input, Button, Layout, Row } from 'antd';
 import { useHistory } from "react-router-dom";
 import 'antd/dist/antd.css';
@@ -7,10 +7,12 @@ import background2 from '../assets/imgs/background2.png'
 import Api from '../api/Api';
 import { RightMenuHeader } from '../components/RightMenuHeader';
 import AppLogo from '../components/AppLogo';
+import LoadingComponent from '../components/LoadingComponent';
 const { Header, Footer, Content } = Layout;
 
 
 const UpdateUser = () => {
+    const [showLoading, setShowLoading] = useState(false);
     const history = useHistory();
 
     const actualToken = JSON.parse(localStorage.getItem('token'))
@@ -34,30 +36,36 @@ const UpdateUser = () => {
         const configRequest = {
             headers: { Authorization: `${actualToken}` }
         }
+        setShowLoading(true);
         if (values.newPassword !== values.newPassword2) {
-            //generar notificacion
+            Notification('info', 'Las contraseñas introducidas deben ser iguales');
             return;
         }
         const response = await Api.updateUser(mapDataToSend(values), configRequest)
-        localStorage.setItem('user', JSON.stringify(response.user))
 
-        if (response.token) {
-            localStorage.setItem('token', JSON.stringify(response.token))
+        if(response){
+            localStorage.setItem('user', JSON.stringify(response.user))
+
+            if (response.token) {
+                localStorage.setItem('token', JSON.stringify(response.token))
+            }
+
+            setShowLoading(false);
+            if (response.user.role.name == "empleado") {
+                history.push("/ehome");
+            }
+            if (response.user.role.name == "dueño" || response.user.role.name == "socio") {
+                history.push("/ohome");
+            }    
         }
-        if (response.user.role.name == "empleado") {
-            history.push("/ehome");
-        }
-        if (response.user.role.name == "dueño" || response.user.role.name == "socio") {
-            history.push("/ohome");
+        else{
+            setShowLoading(false);
         }
     };
 
     const onFinishFailed = errorInfo => {
         console.log('Failed:', errorInfo);
     };
-
- 
-
 
     return (
         <Layout className="layout">

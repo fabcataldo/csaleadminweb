@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Table, Button,  Modal, Row, Col } from 'antd';
 import Api from '../api/Api';
 import ActionsDynamicTableModal from './ActionsDynamicTableModal';
+import LoadingComponent from '../components/LoadingComponent';
 import { EditOutlined } from "@ant-design/icons";
 
 const tokenInfo = JSON.parse(localStorage.getItem('token'))
@@ -21,7 +22,7 @@ const DynamicTableHook = ({
     const [modalVisible, setModalVisible] = useState(false);
     const [roles, setRoles] = useState([]);
     const [recordToEdit, setRecordToEdit] = useState(null);
-
+    const [showLoading, setShowLoading] = useState(false);
     
     useEffect(() => {
         if (data) {
@@ -53,13 +54,15 @@ const DynamicTableHook = ({
     useEffect(()=>{
         const getRoles = async ()=>{
             try{
+                setShowLoading(true);
                 let rolesFromAPI = await Api.getRoles(configRequest);
+                setShowLoading(false);
                 setRoles(rolesFromAPI)    
             }catch(err){
                 console.log(err);
             }
         }
-            getRoles();
+        getRoles();
     },[])
 
 
@@ -79,17 +82,16 @@ const DynamicTableHook = ({
         console.log(newData)
         selectedRowKeys.forEach(item2 => {
             let keyToDelete = newData.findIndex(data => data.key == item2);
-            console.log(keyToDelete)
-
             if (keyToDelete !== -1) {
                 itemToDelete = newData.find(data => data.key == item2);
                 console.log(itemToDelete)
                 newData.splice(keyToDelete, 1)
-
             }
         })
         setDataSource([...newData])
+        setShowLoading(true);
         await Api.removeUser(itemToDelete._id, configRequest)
+        setShowLoading(false);
         setSelectedRowKeys([])
     };
 
@@ -107,12 +109,17 @@ const DynamicTableHook = ({
             const index = newData.findIndex(item => newRecord.key === item.key);
             const item = newData[index];
             newData.splice(index, 1, { ...item, ...newRecord }); 
-            await Api.updateUser(requestBody, configRequest)   
-            setRecordToEdit(null)
+            setShowLoading(true);
+            await Api.updateUser(requestBody, configRequest);
+            setShowLoading(false);
+
+            setRecordToEdit(null);
             setDataSource(newData);
         }
         else{
-            const response = await Api.addUser(requestBody, configRequest)
+            setShowLoading(true);
+            const response = await Api.addUser(requestBody, configRequest);
+            setShowLoading(false);
             newRecord._id = response.user._id;
             newRecord.password = response.user.password;
             newData.push(newRecord)
@@ -185,8 +192,18 @@ const DynamicTableHook = ({
                     onCancel={handleCancel}
                 >
                 </ActionsDynamicTableModal>
+
+                {
+                showLoading ?
+                <div>
+                    <LoadingComponent delay={2000}></LoadingComponent>
+                </div>
+            :<div></div>}
+
             </Modal>
             }
+
+            
         </div>
     );
 }

@@ -17,10 +17,7 @@ export const RightMenuHeader = () => {
     }
 
     const closeSession = () => {
-        localStorage.removeItem('user');
-        localStorage.removeItem('token');
-        localStorage.removeItem('ticket');
-        localStorage.removeItem('userTicket');
+        localStorage.clear();
         history.push("")
     }
 

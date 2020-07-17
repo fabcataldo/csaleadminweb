@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Layout,  Input, Button, Space} from 'antd';
 import background2 from '../assets/imgs/background2.png'
-import { useHistory } from "react-router-dom";
+import LoadingComponent from '../components/LoadingComponent';
 import DynamicTableHook from '../components/DynamicTableHook';
 import Api from '../api/Api';
 import '../styles/appStyles.scss';
@@ -11,15 +11,11 @@ import { RightMenuHeader } from '../components/RightMenuHeader';
 const { Header, Footer, Content } = Layout;
 
 const UsersAdministrator = () => {
-    const history = useHistory();
-    const actualToken = JSON.parse(localStorage.getItem('token'))
-    const userSaved = JSON.parse(localStorage.getItem('user'))
-
+    const [showLoading, setShowLoading] = useState(false);
     const [users, setUsers] = useState(null);
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
 
-    const userInfo = JSON.parse(localStorage.getItem('user'))
     const tokenInfo = JSON.parse(localStorage.getItem('token'))
     const configRequest = {
         headers: { Authorization: `${tokenInfo}` }
@@ -46,9 +42,17 @@ const UsersAdministrator = () => {
     useEffect(()=>{
         const getUsers = async()=>{
             try{
+                setShowLoading(true);
                 let response = await Api.getUsers(configRequest)
-                response=mapUsersData(response.users)
-                setUsers(response);
+
+                if(response){
+                  response=mapUsersData(response.users)
+                  setShowLoading(false);
+                  setUsers(response);
+                }
+                else{
+                  setShowLoading(false);
+                }
             }catch(err){
                 console.log(err);
             }
@@ -166,6 +170,12 @@ const UsersAdministrator = () => {
                         customStyle={"dynamicTable"}
                     >
                     </DynamicTableHook>
+                    {
+                    showLoading ?
+                    <div>
+                      <LoadingComponent delay={2000}></LoadingComponent>
+                    </div>
+                    :<div></div>}
                 </div>
             </Content>
             <Footer className="footer">CSaleAdminWeb (c) 2020</Footer>

@@ -1,15 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Form, Input, Layout, Row } from 'antd';
 import { useHistory } from "react-router-dom";
 import background2 from '../assets/imgs/background2.png'
 import AppLogo from '../components/AppLogo';
 import Api from '../api/Api';
 import { RightMenuHeader } from '../components/RightMenuHeader';
-import Notification from '../components/Notification';
+import LoadingComponent from '../components/LoadingComponent';
 const { Header, Footer, Content } = Layout;
 
 
 const EmployeeHome = () => {
+  const [showLoading, setShowLoading] = useState(false);
   const history = useHistory();
   const token = JSON.parse(localStorage.getItem('token'));
 
@@ -17,17 +18,20 @@ const EmployeeHome = () => {
     const configRequest = {
       headers: { Authorization: `${token}` }
     }
-    const ticket = await Api.getTicket(values.uniqueCode, configRequest);
 
+    setShowLoading(true);
+    const ticket = await Api.getTicket(parseInt(values.uniqueCode), configRequest);
     if (ticket) {
       const userTicket = await Api.getUserTicket(ticket._id, configRequest);
-      localStorage.setItem('ticket', JSON.stringify(ticket))
-      localStorage.setItem('userTicket', JSON.stringify(userTicket))
-      history.push("/ehome/ticket");
+      if(userTicket){
+        localStorage.setItem('ticket', JSON.stringify(ticket))
+        localStorage.setItem('userTicket', JSON.stringify(userTicket))
+
+        setShowLoading(false);
+        history.push("/ehome/ticket");  
+      }
     }
-    else {
-      Notification('info', 'No se encontró el ticket de compra.\n');
-    }
+    setShowLoading(false);
   };
 
   const onFinishFailed = errorInfo => {
@@ -76,6 +80,13 @@ const EmployeeHome = () => {
               </Form.Item>
             </Row>
           </Form>
+
+          {
+          showLoading ?
+          <div>
+            <LoadingComponent delay={2000}></LoadingComponent>
+          </div>
+          :<div></div>}
         </div>
       </Content>
       <Footer className="footer">CSaleAdminWeb (c) 2020</Footer>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Form, Input, Button, Layout, Row } from 'antd';
 import { useHistory } from "react-router-dom";
 import '../styles/appStyles.scss';
@@ -6,23 +6,27 @@ import background from '../assets/imgs/background2.png'
 import Api from '../api/Api';
 import AppLogo from '../components/AppLogo';
 import Notification from '../components/Notification';
+import LoadingComponent from '../components/LoadingComponent';
 const { Header, Footer, Content } = Layout;
 
 
 const Login = () => {
   const history = useHistory();
-
+  const [showLoading, setShowLoading] = useState(false);
+  
   const saveSession=(session)=>{
     localStorage.setItem('user', JSON.stringify(session.user))
     localStorage.setItem('token', JSON.stringify(session.token))
   }
 
   const onFinish = async values => {
+    setShowLoading(true);
     const response = await Api.login(values)
-    
+
     if(response){
       if(response.user.role.name=="empleado"){
         saveSession(response);
+        console.log(showLoading)
         history.push("/ehome");
       }
       if(response.user.role.name=="dueño" || response.user.role.name=="socio" ){
@@ -30,16 +34,13 @@ const Login = () => {
         history.push("/ohome");
       }
       if(response.user.role.name=="cliente"){
-        Notification('info', 'Inicio de sesión fallido', 'Debe iniciar sesión con un usuario que sea dueño o socio.');
-        return;
+        Notification('info', 'Inicio de sesión fallido', 'Debe iniciar sesión con un usuario que sea dueño, socio o empleado.');
       }
     }
+    setShowLoading(false);
   };
 
 
-  const onFinishFailed = errorInfo => {
-    console.log('Failed:', errorInfo);
-  };
   return (
     <Layout className="layout">
       <Header className="headerStyle">
@@ -58,10 +59,7 @@ const Login = () => {
             initialValues={{
               remember: true,
             }}
-            onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
-
-          >
+            onFinish={onFinish}>
             <Row style={{ justifyContent: "center" }}>
               <Form.Item
                 label="Email"
@@ -70,7 +68,7 @@ const Login = () => {
                 rules={[
                   {
                     required: true,
-                    message: 'Please input your username!',
+                    message: 'Email requerido.',
                   },
                 ]}
               >
@@ -87,7 +85,7 @@ const Login = () => {
                 rules={[
                   {
                     required: true,
-                    message: 'Please input your password!',
+                    message: 'Contraseña requerido.',
                   },
                 ]}
               >
@@ -100,6 +98,12 @@ const Login = () => {
               </Button>
             </Form.Item>
           </Form>
+          {
+          showLoading ?
+          <div>
+            <LoadingComponent delay={2000}></LoadingComponent>
+          </div>
+          :<div></div>}
         </div>
       </Content>
       
