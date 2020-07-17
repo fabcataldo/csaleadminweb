@@ -23,8 +23,7 @@ const UsersAdministrator = () => {
 
   
     const mapUsersData = (dataSource) => {
-        let a = [];
-        a = dataSource.map((item, index) => {
+      return dataSource.map((item, index) => {
             let itemPrivileges= '';
             item.role.privileges.forEach((privilege)=>{
                 itemPrivileges+= privilege.description+ '. '
@@ -35,8 +34,6 @@ const UsersAdministrator = () => {
                 tickets: item.tickets, comments: item.comments
             }
         })
-        console.log(a)
-        return a;
       }
 
     useEffect(()=>{
