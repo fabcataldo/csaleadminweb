@@ -49,7 +49,7 @@ const ActionsDynamicTableModal = (
                     rules={[
                         {
                             required: true,
-                            message: 'Please input your username!',
+                            message: 'Nombre requerido.',
                         },
                     ]}
                 >
@@ -62,7 +62,7 @@ const ActionsDynamicTableModal = (
                     rules={[
                         {
                             required: true,
-                            message: 'Please input your username!',
+                            message: 'Apellido requerido.',
                         },
                     ]}
                 >
@@ -75,7 +75,7 @@ const ActionsDynamicTableModal = (
                     rules={[
                         {
                             required: true,
-                            message: 'Please input your username!',
+                            message: 'Email requerido.',
                         },
                     ]}
                 >
@@ -88,7 +88,7 @@ const ActionsDynamicTableModal = (
                     rules={[
                         {
                             required: true,
-                            message: 'Please input your username!',
+                            message: 'Rol requerido!',
                         },
                     ]}
                 >
