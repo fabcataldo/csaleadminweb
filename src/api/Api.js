@@ -15,7 +15,7 @@ export default class Api{
         }).then(res=>{
             response = res.data;
         }).catch(err=>{
-            Notification('error', 'Inicio de sesión fallido\n', 'Error técnico: '+err);
+            Notification('error', 'Usuario no encontrado.\n', 'Error técnico: '+err);
         });
         return response;
     }
@@ -34,9 +34,10 @@ export default class Api{
 
     static getTicket = async (uniqueCode, conf)=>{
         let response;
-        await axios.get(Global.URL_SRV+Global.URL_API+'/tickets/?unique_code='+uniqueCode, conf)
+        await axios.get(Global.URL_SRV+Global.URL_API+'/tickets?uniqueCode='+uniqueCode, conf)
         .then(res=>{
-            response = res.data[0];
+            response = res.data;
+            
         })
         .catch(err=>{
             Notification('error', 'No se pudo obtener el ticket\n', 'Error técnico: '+err);
