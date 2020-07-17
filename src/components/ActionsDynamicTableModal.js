@@ -126,7 +126,6 @@ const ActionsDynamicTableModal = (
                 itemPrivileges += privilege.description + ', '
             })
         }
-        console.log(itemPrivileges)
         formToSave.privileges = itemPrivileges
         onChange(formToSave);
     }
