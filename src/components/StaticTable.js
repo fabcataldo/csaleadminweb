@@ -13,7 +13,7 @@ const StaticTable=(props)=>{
             dataSource={data} 
             size="small"
             pagination = {{
-                pageSize: 6
+                pageSize: 1
             }}
         />
     )
