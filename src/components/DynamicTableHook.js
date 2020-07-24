@@ -12,6 +12,10 @@ const DynamicTableHook = ({
     customStyle,
     ...restProps
 }) => {
+    const tokenInfo = JSON.parse(localStorage.getItem('token'))
+    const configRequest = {
+        headers: { Authorization: `${tokenInfo}` }
+    }
     const [dataSource, setDataSource] = useState([]);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [tableColumns, setTableColumns] = useState([]);
@@ -21,10 +25,7 @@ const DynamicTableHook = ({
     const [showLoading, setShowLoading] = useState(false);
 
     
-    const tokenInfo = JSON.parse(localStorage.getItem('token'))
-    const configRequest = {
-        headers: { Authorization: `${tokenInfo}` }
-    }
+   
     
     useEffect(() => {
         if (data) {
