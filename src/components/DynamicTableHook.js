@@ -5,10 +5,6 @@ import ActionsDynamicTableModal from './ActionsDynamicTableModal';
 import LoadingComponent from '../components/LoadingComponent';
 import { EditOutlined } from "@ant-design/icons";
 
-const tokenInfo = JSON.parse(localStorage.getItem('token'))
-const configRequest = {
-    headers: { Authorization: `${tokenInfo}` }
-}
 
 const DynamicTableHook = ({
     data,
@@ -23,6 +19,12 @@ const DynamicTableHook = ({
     const [roles, setRoles] = useState([]);
     const [recordToEdit, setRecordToEdit] = useState(null);
     const [showLoading, setShowLoading] = useState(false);
+
+    
+    const tokenInfo = JSON.parse(localStorage.getItem('token'))
+    const configRequest = {
+        headers: { Authorization: `${tokenInfo}` }
+    }
     
     useEffect(() => {
         if (data) {
