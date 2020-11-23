@@ -83,7 +83,8 @@ const OwnerDashboard = () => {
       return {
         ...ticket, date_of_purchase: newDateOfPurchase.getDate() + '/' + (newDateOfPurchase.getMonth().toString().length < 2 ? '0' + newDateOfPurchase.getMonth() : (newDateOfPurchase.getMonth() + 1) ) +
           '/' + newDateOfPurchase.getFullYear() + ' ' + newDateOfPurchase.getHours() + ':' +
-          newDateOfPurchase.getMinutes()
+          (tmp.getMinutes().toString().length < 2 ? '0' 
+            + tmp.getMinutes() : (tmp.getMinutes() + 1) )
       }
     })
     setTickets(newTickets);
