@@ -48,7 +48,7 @@ const EmployeeHome = () => {
       <Content>
         <div className="site-layout-content" style={{ backgroundImage: `url(${background2})` }}>
           <h1 style={{ textAlign: 'center', color: 'white' }}>
-            Bienvenido a CSaleAdminWeb! :)
+            Bienvenido a CSaleAdminWeb
           </h1>
           <h3 style={{ textAlign: 'center', color: 'white' }}>
             ¡Acá vas a poder validar las compras de tus clientes!

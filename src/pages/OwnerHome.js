@@ -20,7 +20,7 @@ const OwnerHome = () => {
       <Content>
         <div className="site-layout-content" style={{ backgroundImage: `url(${background2})` }}>
           <h1 style={{ color: 'white', fontWeight: 'bold' }}>
-            Bienvenido a CSaleAdminWeb! :)
+            Bienvenido a CSaleAdminWeb
         </h1>
           <h3 style={{ color: 'white' }}>
             ¡Acá vas a poder gestionar tu negocio de manera fácil, rápida y segura!

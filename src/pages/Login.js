@@ -49,7 +49,7 @@ const Login = () => {
       <Content>
         <div className="site-layout-content" style={{ backgroundImage: `url(${background})`}}>
           <h1 style={{ color: "white", fontWeight: 'bold'  }}>
-            Bienvenido a CSaleAdminWeb! :)
+            Bienvenido a CSaleAdminWeb
           </h1>
           <br></br>
           <br></br>
