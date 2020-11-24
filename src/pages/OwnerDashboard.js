@@ -34,9 +34,11 @@ const OwnerDashboard = () => {
       let newTickets = tickets.map((ticket) => {
         let newDateOfPurchase = new Date(ticket.date_of_purchase);
         return {
-          ...ticket, date_of_purchase: newDateOfPurchase.getDate() + '/' + newDateOfPurchase.getMonth() +
+          ...ticket, date_of_purchase: newDateOfPurchase.getDate() + '/' + 
+          (newDateOfPurchase.getMonth().toString().length < 2 ? '0' + newDateOfPurchase.getMonth() : (newDateOfPurchase.getMonth() + 1) ) +
             '/' + newDateOfPurchase.getFullYear() + ' ' + newDateOfPurchase.getHours() + ':' +
-            newDateOfPurchase.getMinutes()
+            (newDateOfPurchase.getMinutes().toString().length < 2 ? '0' 
+              + newDateOfPurchase.getMinutes() : (newDateOfPurchase.getMinutes() + 1) )
         }
       })
       setTickets(newTickets);
